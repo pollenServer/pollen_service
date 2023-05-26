@@ -44,7 +44,7 @@ public class UserService {
         return object;
     }
 
-    private JSONObject getJsonObject(String builtUrl) throws IOException, ParseException {
+    public JSONObject getJsonObject(String builtUrl) throws IOException, ParseException {
         URL url = new URL(builtUrl);
         HttpURLConnection conn = (HttpURLConnection) url.openConnection();
         conn.setRequestMethod("GET");
