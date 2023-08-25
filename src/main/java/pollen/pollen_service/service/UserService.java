@@ -24,21 +24,21 @@ public class UserService {
     private final String CHARSET = "UTF-8";
 
     public Object findOakPollen(String areaNo, String time) throws IOException, ParseException {
-        String builtUrl = buildUrl("getOakPollenRiskIdxV3", areaNo, time);
+        String builtUrl = buildUrl("getOakPollenRiskndxV3", areaNo, time);
         JSONObject object = getJsonObject(builtUrl);
 
         return object;
     }
     
     public Object findPinePollen(String areaNo, String time) throws IOException, ParseException {
-        String builtUrl = buildUrl("getPinePollenRiskIdxV3", areaNo, time);
+        String builtUrl = buildUrl("getPinePollenRiskndxV3", areaNo, time);
         JSONObject object = getJsonObject(builtUrl);
 
         return object;
     }
     
     public Object findWeedsPollen(String areaNo, String time) throws IOException, ParseException {
-        String builtUrl = buildUrl("getWeedsPollenRiskIdxV3", areaNo, time);
+        String builtUrl = buildUrl("getWeedsPollenRiskndxV3", areaNo, time);
         JSONObject object = getJsonObject(builtUrl);
 
         return object;
