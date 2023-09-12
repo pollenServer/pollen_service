@@ -21,6 +21,8 @@ import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLEncoder;
+import java.time.LocalDate;
+import java.time.ZoneId;
 
 @Service
 @Slf4j
@@ -35,9 +37,11 @@ public class UserService {
     private final PineRepository pineRepository;
     private final WeedsRepository weedsRepository;
 
-    public Object findOakPollen(String areaNo, String time) throws IOException, ParseException {
+    public Object findOakPollen(String areaNo) throws IOException, ParseException {
         Oak oak = oakRepository.findByAreaNo(areaNo);
         if (oak == null) {
+            LocalDate now = LocalDate.now(ZoneId.of("Asia/Seoul"));
+            String time = now.toString().replaceAll("-", "").concat("06");
             String builtUrl = buildUrl("getOakPollenRiskndxV3", areaNo, time);
             return getJsonObject(builtUrl);
         } else {
@@ -45,9 +49,11 @@ public class UserService {
         }
     }
     
-    public Object findPinePollen(String areaNo, String time) throws IOException, ParseException {
+    public Object findPinePollen(String areaNo) throws IOException, ParseException {
         Pine pine = pineRepository.findByAreaNo(areaNo);
         if (pine == null) {
+            LocalDate now = LocalDate.now(ZoneId.of("Asia/Seoul"));
+            String time = now.toString().replaceAll("-", "").concat("06");
             String builtUrl = buildUrl("getPinePollenRiskndxV3", areaNo, time);
             return getJsonObject(builtUrl);
         } else {
@@ -55,9 +61,11 @@ public class UserService {
         }
     }
     
-    public Object findWeedsPollen(String areaNo, String time) throws IOException, ParseException {
+    public Object findWeedsPollen(String areaNo) throws IOException, ParseException {
         Weeds weeds = weedsRepository.findByAreaNo(areaNo);
         if (weeds == null) {
+            LocalDate now = LocalDate.now(ZoneId.of("Asia/Seoul"));
+            String time = now.toString().replaceAll("-", "").concat("06");
             String builtUrl = buildUrl("getWeedsPollenRiskndxV3", areaNo, time);
             return getJsonObject(builtUrl);
         } else {
