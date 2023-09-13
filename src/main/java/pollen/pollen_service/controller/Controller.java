@@ -18,17 +18,17 @@ public class Controller {
     private final UserService userService;
 
     @GetMapping("/oak")
-    public Object oakRequest(@RequestParam("areaNo") String areaNo, @RequestParam("time") String time) throws IOException, ParseException {
-        return userService.findOakPollen(areaNo, time);
+    public Object oakRequest(@RequestParam("areaNo") String areaNo) throws IOException, ParseException {
+        return userService.findOakPollen(areaNo);
     }
 
     @GetMapping("/pine")
-    public Object pineRequest(@RequestParam("areaNo") String areaNo, @RequestParam("time") String time) throws IOException, ParseException {
-        return userService.findPinePollen(areaNo, time);
+    public Object pineRequest(@RequestParam("areaNo") String areaNo) throws IOException, ParseException {
+        return userService.findPinePollen(areaNo);
     }
 
     @GetMapping("/weeds")
-    public Object weedsRequest(@RequestParam("areaNo") String areaNo, @RequestParam("time") String time) throws IOException, ParseException {
-        return userService.findWeedsPollen(areaNo, time);
+    public Object weedsRequest(@RequestParam("areaNo") String areaNo) throws IOException, ParseException {
+        return userService.findWeedsPollen(areaNo);
     }
 }
