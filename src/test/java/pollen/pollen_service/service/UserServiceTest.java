@@ -1,6 +1,5 @@
 package pollen.pollen_service.service;
 
-import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -12,11 +11,10 @@ import java.io.UnsupportedEncodingException;
 
 import static org.assertj.core.api.Assertions.*;
 
-@Slf4j
 @ExtendWith(MockitoExtension.class)
 class UserServiceTest {
 
-    private String SERVICEKEY = "test-key";
+    private final String SERVICEKEY = "test-key";
 
     @InjectMocks
     private UserService userService;
