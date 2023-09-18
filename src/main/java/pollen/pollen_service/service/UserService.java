@@ -2,6 +2,7 @@ package pollen.pollen_service.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
@@ -42,35 +43,85 @@ public class UserService {
         if (oak == null) {
             LocalDate now = LocalDate.now(ZoneId.of("Asia/Seoul"));
             String time = now.toString().replaceAll("-", "").concat("06");
-            String builtUrl = buildUrl("getOakPollenRiskndxV3", areaNo, time);
-            return getJsonObject(builtUrl);
-        } else {
-            return oak;
+            JSONObject result = getData("getOakPollenRiskndxV3", areaNo, time);
+            if (result != null) {
+                oak = new Oak(areaNo);
+                if (result.get("today").toString().equals("")) {    // 전날 18시 데이터 응답 대비
+                    oak.setTomorrow(Integer.parseInt(result.get("tomorrow").toString()));
+                    oak.setDayaftertomorrow(Integer.parseInt(result.get("dayaftertomorrow").toString()));
+                    oak.setTwodaysaftertomorrow(Integer.parseInt(result.get("twodaysaftertomorrow").toString()));
+                } else {    // 당일 06시 데이터 응답
+                    oak.setToday(Integer.parseInt(result.get("today").toString()));
+                    oak.setTomorrow(Integer.parseInt(result.get("tomorrow").toString()));
+                    oak.setDayaftertomorrow(Integer.parseInt(result.get("dayaftertomorrow").toString()));
+                }
+                return oak;
+            }
         }
+        return oak;
     }
-    
+
     public Object findPinePollen(String areaNo) throws IOException, ParseException {
         Pine pine = pineRepository.findByAreaNo(areaNo);
         if (pine == null) {
             LocalDate now = LocalDate.now(ZoneId.of("Asia/Seoul"));
             String time = now.toString().replaceAll("-", "").concat("06");
-            String builtUrl = buildUrl("getPinePollenRiskndxV3", areaNo, time);
-            return getJsonObject(builtUrl);
-        } else {
-            return pine;
+            JSONObject result = getData("getPinePollenRiskndxV3", areaNo, time);
+            if (result != null) {
+                pine = new Pine(areaNo);
+                if (result.get("today").toString().equals("")) {    // 전날 18시 데이터 응답 대비
+                    pine.setTomorrow(Integer.parseInt(result.get("tomorrow").toString()));
+                    pine.setDayaftertomorrow(Integer.parseInt(result.get("dayaftertomorrow").toString()));
+                    pine.setTwodaysaftertomorrow(Integer.parseInt(result.get("twodaysaftertomorrow").toString()));
+                } else {    // 당일 06시 데이터 응답
+                    pine.setToday(Integer.parseInt(result.get("today").toString()));
+                    pine.setTomorrow(Integer.parseInt(result.get("tomorrow").toString()));
+                    pine.setDayaftertomorrow(Integer.parseInt(result.get("dayaftertomorrow").toString()));
+                }
+                return pine;
+            }
         }
+        return pine;
     }
-    
+
     public Object findWeedsPollen(String areaNo) throws IOException, ParseException {
         Weeds weeds = weedsRepository.findByAreaNo(areaNo);
         if (weeds == null) {
             LocalDate now = LocalDate.now(ZoneId.of("Asia/Seoul"));
             String time = now.toString().replaceAll("-", "").concat("06");
-            String builtUrl = buildUrl("getWeedsPollenRiskndxV3", areaNo, time);
-            return getJsonObject(builtUrl);
-        } else {
-            return weeds;
+            JSONObject result = getData("getWeedsPollenRiskndxV3", areaNo, time);
+            if (result != null) {
+                weeds = new Weeds(areaNo);
+                if (result.get("today").toString().equals("")) {    // 전날 18시 데이터 응답 대비
+                    weeds.setTomorrow(Integer.parseInt(result.get("tomorrow").toString()));
+                    weeds.setDayaftertomorrow(Integer.parseInt(result.get("dayaftertomorrow").toString()));
+                    weeds.setTwodaysaftertomorrow(Integer.parseInt(result.get("twodaysaftertomorrow").toString()));
+                } else {    // 당일 06시 데이터 응답
+                    weeds.setToday(Integer.parseInt(result.get("today").toString()));
+                    weeds.setTomorrow(Integer.parseInt(result.get("tomorrow").toString()));
+                    weeds.setDayaftertomorrow(Integer.parseInt(result.get("dayaftertomorrow").toString()));
+                }
+                return weeds;
+            }
         }
+        return weeds;
+    }
+
+    public JSONObject getData(String url, String areaNo, String time) throws IOException, ParseException {
+        String builtUrl = buildUrl(url, areaNo, time);
+        JSONObject object = getJsonObject(builtUrl);
+        if (object != null) {
+            JSONObject response = (JSONObject) object.get("response");
+            JSONObject header = (JSONObject) response.get("header");
+            if (header.get("resultCode").equals("00")) {
+                JSONObject body = (JSONObject) response.get("body");
+                JSONObject items = (JSONObject) body.get("items");
+                JSONArray item = (JSONArray) items.get("item");
+
+                return (JSONObject) item.get(0);
+            }
+        }
+        return null;
     }
 
     public JSONObject getJsonObject(String builtUrl) throws IOException, ParseException {
@@ -99,12 +150,12 @@ public class UserService {
 
     public String buildUrl(String url, String areaNo, String time) throws UnsupportedEncodingException {
         StringBuilder urlBuilder = new StringBuilder("http://apis.data.go.kr/1360000/HealthWthrIdxServiceV3/" + url); /*URL*/
-        urlBuilder.append("?" + URLEncoder.encode("serviceKey",CHARSET) + "=" + SERVICEKEY); /*Service Key*/
-        urlBuilder.append("&" + URLEncoder.encode("pageNo",CHARSET) + "=" + URLEncoder.encode("1", CHARSET)); /*페이지번호*/
-        urlBuilder.append("&" + URLEncoder.encode("numOfRows",CHARSET) + "=" + URLEncoder.encode("10", CHARSET)); /*한 페이지 결과 수*/
-        urlBuilder.append("&" + URLEncoder.encode("dataType",CHARSET) + "=" + URLEncoder.encode("JSON", CHARSET)); /*요청자료형식(XML/JSON)*/
-        urlBuilder.append("&" + URLEncoder.encode("areaNo",CHARSET) + "=" + URLEncoder.encode(areaNo, CHARSET)); /*서울지점*/
-        urlBuilder.append("&" + URLEncoder.encode("time",CHARSET) + "=" + URLEncoder.encode(time, CHARSET));    /*시간*/
+        urlBuilder.append("?" + URLEncoder.encode("serviceKey", CHARSET) + "=" + SERVICEKEY); /*Service Key*/
+        urlBuilder.append("&" + URLEncoder.encode("pageNo", CHARSET) + "=" + URLEncoder.encode("1", CHARSET)); /*페이지번호*/
+        urlBuilder.append("&" + URLEncoder.encode("numOfRows", CHARSET) + "=" + URLEncoder.encode("10", CHARSET)); /*한 페이지 결과 수*/
+        urlBuilder.append("&" + URLEncoder.encode("dataType", CHARSET) + "=" + URLEncoder.encode("JSON", CHARSET)); /*요청자료형식(XML/JSON)*/
+        urlBuilder.append("&" + URLEncoder.encode("areaNo", CHARSET) + "=" + URLEncoder.encode(areaNo, CHARSET)); /*서울지점*/
+        urlBuilder.append("&" + URLEncoder.encode("time", CHARSET) + "=" + URLEncoder.encode(time, CHARSET));    /*시간*/
 
         return urlBuilder.toString();
     }
