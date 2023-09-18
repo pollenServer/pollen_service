@@ -1,7 +1,7 @@
 package pollen.pollen_service.domain;
 
 import lombok.Getter;
-import pollen.pollen_service.domain.BaseEntity;
+import lombok.Setter;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -9,6 +9,7 @@ import javax.persistence.Id;
 
 @Entity
 @Getter
+@Setter
 public class Weeds extends BaseEntity {
 
     @Id
@@ -25,4 +26,10 @@ public class Weeds extends BaseEntity {
 
     @Column
     private int twodaysaftertomorrow;
+
+    public Weeds() {}
+
+    public Weeds(String areaNo) {
+        this.areaNo = areaNo;
+    }
 }
