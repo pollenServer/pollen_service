@@ -1,6 +1,7 @@
 package pollen.pollen_service.domain;
 
 import lombok.Getter;
+import pollen.pollen_service.domain.BaseEntity;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
