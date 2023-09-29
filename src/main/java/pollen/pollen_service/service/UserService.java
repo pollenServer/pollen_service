@@ -23,6 +23,7 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLEncoder;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.ZoneId;
 
 @Service
@@ -55,7 +56,32 @@ public class UserService {
                     oak.setTomorrow(Integer.parseInt(result.get("tomorrow").toString()));
                     oak.setDayaftertomorrow(Integer.parseInt(result.get("dayaftertomorrow").toString()));
                 }
+                oakRepository.save(oak);
                 return oak;
+            } else {
+                return null;
+            }
+        } else {
+            if (checkLastModifiedTime(oak.getLastModifiedTime())) {
+                LocalDate now = LocalDate.now(ZoneId.of("Asia/Seoul"));
+                String time = now.toString().replaceAll("-", "").concat("06");
+                JSONObject result = getData("getWeedsPollenRiskndxV3", areaNo, time);
+                if (result != null) {
+                    oak = new Oak(areaNo);
+                    if (result.get("today").toString().equals("")) {    // 전날 18시 데이터 응답 대비
+                        oak.setTomorrow(Integer.parseInt(result.get("tomorrow").toString()));
+                        oak.setDayaftertomorrow(Integer.parseInt(result.get("dayaftertomorrow").toString()));
+                        oak.setTwodaysaftertomorrow(Integer.parseInt(result.get("twodaysaftertomorrow").toString()));
+                    } else {    // 당일 06시 데이터 응답
+                        oak.setToday(Integer.parseInt(result.get("today").toString()));
+                        oak.setTomorrow(Integer.parseInt(result.get("tomorrow").toString()));
+                        oak.setDayaftertomorrow(Integer.parseInt(result.get("dayaftertomorrow").toString()));
+                    }
+                    oakRepository.save(oak);
+                    return oak;
+                } else {
+                    return null;
+                }
             }
         }
         return oak;
@@ -78,7 +104,32 @@ public class UserService {
                     pine.setTomorrow(Integer.parseInt(result.get("tomorrow").toString()));
                     pine.setDayaftertomorrow(Integer.parseInt(result.get("dayaftertomorrow").toString()));
                 }
+                pineRepository.save(pine);
                 return pine;
+            } else {
+                return null;
+            }
+        } else {
+            if (checkLastModifiedTime(pine.getLastModifiedTime())) {
+                LocalDate now = LocalDate.now(ZoneId.of("Asia/Seoul"));
+                String time = now.toString().replaceAll("-", "").concat("06");
+                JSONObject result = getData("getWeedsPollenRiskndxV3", areaNo, time);
+                if (result != null) {
+                    pine = new Pine(areaNo);
+                    if (result.get("today").toString().equals("")) {    // 전날 18시 데이터 응답 대비
+                        pine.setTomorrow(Integer.parseInt(result.get("tomorrow").toString()));
+                        pine.setDayaftertomorrow(Integer.parseInt(result.get("dayaftertomorrow").toString()));
+                        pine.setTwodaysaftertomorrow(Integer.parseInt(result.get("twodaysaftertomorrow").toString()));
+                    } else {    // 당일 06시 데이터 응답
+                        pine.setToday(Integer.parseInt(result.get("today").toString()));
+                        pine.setTomorrow(Integer.parseInt(result.get("tomorrow").toString()));
+                        pine.setDayaftertomorrow(Integer.parseInt(result.get("dayaftertomorrow").toString()));
+                    }
+                    pineRepository.save(pine);
+                    return pine;
+                } else {
+                    return null;
+                }
             }
         }
         return pine;
@@ -101,7 +152,30 @@ public class UserService {
                     weeds.setTomorrow(Integer.parseInt(result.get("tomorrow").toString()));
                     weeds.setDayaftertomorrow(Integer.parseInt(result.get("dayaftertomorrow").toString()));
                 }
+                weedsRepository.save(weeds);
                 return weeds;
+            }
+        } else {
+            if (checkLastModifiedTime(weeds.getLastModifiedTime())) {
+                LocalDate now = LocalDate.now(ZoneId.of("Asia/Seoul"));
+                String time = now.toString().replaceAll("-", "").concat("06");
+                JSONObject result = getData("getWeedsPollenRiskndxV3", areaNo, time);
+                if (result != null) {
+                    if (result.get("today").toString().equals("")) {    // 전날 18시 데이터 응답 대비
+                        weeds.setTomorrow(Integer.parseInt(result.get("tomorrow").toString()));
+                        weeds.setDayaftertomorrow(Integer.parseInt(result.get("dayaftertomorrow").toString()));
+                        weeds.setTwodaysaftertomorrow(Integer.parseInt(result.get("twodaysaftertomorrow").toString()));
+                    } else {    // 당일 06시 데이터 응답
+                        weeds.setToday(Integer.parseInt(result.get("today").toString()));
+                        weeds.setTomorrow(Integer.parseInt(result.get("tomorrow").toString()));
+                        weeds.setDayaftertomorrow(Integer.parseInt(result.get("dayaftertomorrow").toString()));
+                    }
+                    weedsRepository.save(weeds);
+                    log.info("updateWeeds");
+                    return weeds;
+                }  else {
+                    return null;
+                }
             }
         }
         return weeds;
@@ -158,5 +232,12 @@ public class UserService {
         urlBuilder.append("&" + URLEncoder.encode("time", CHARSET) + "=" + URLEncoder.encode(time, CHARSET));    /*시간*/
 
         return urlBuilder.toString();
+    }
+
+    public boolean checkLastModifiedTime(LocalDateTime lastModifiedTime) {
+        LocalDateTime now = LocalDateTime.now(ZoneId.of("Asia/Seoul"));
+        log.info("lastModifiedTime == {}",lastModifiedTime.getDayOfMonth());
+        log.info("now == {}",now.getDayOfMonth());
+        return now.getDayOfMonth() != lastModifiedTime.getDayOfMonth();
     }
 }
