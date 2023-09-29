@@ -65,8 +65,8 @@ public class UserService {
             }
         } else {
             if (checkLastModifiedTime(oak.getLastModifiedTime())) {
-                LocalDate now = LocalDate.now(ZoneId.of("Asia/Seoul"));
-                String time = now.toString().replaceAll("-", "").concat("06");
+                LocalDateTime now = LocalDateTime.now(ZoneId.of("Asia/Seoul"));
+                String time = now.toLocalDate().toString().replaceAll("-", "").concat("06");
                 JSONObject result = getData("getWeedsPollenRiskndxV3", areaNo, time);
                 if (result != null) {
                     oak = new Oak(areaNo);
@@ -79,7 +79,7 @@ public class UserService {
                         oak.setTomorrow(Integer.parseInt(result.get("tomorrow").toString()));
                         oak.setDayaftertomorrow(Integer.parseInt(result.get("dayaftertomorrow").toString()));
                     }
-                    oakRepository.save(oak);
+                    oak.setLastModifiedTime(now);
                     return oak;
                 } else {
                     return null;
@@ -113,8 +113,8 @@ public class UserService {
             }
         } else {
             if (checkLastModifiedTime(pine.getLastModifiedTime())) {
-                LocalDate now = LocalDate.now(ZoneId.of("Asia/Seoul"));
-                String time = now.toString().replaceAll("-", "").concat("06");
+                LocalDateTime now = LocalDateTime.now(ZoneId.of("Asia/Seoul"));
+                String time = now.toLocalDate().toString().replaceAll("-", "").concat("06");
                 JSONObject result = getData("getWeedsPollenRiskndxV3", areaNo, time);
                 if (result != null) {
                     pine = new Pine(areaNo);
@@ -127,7 +127,7 @@ public class UserService {
                         pine.setTomorrow(Integer.parseInt(result.get("tomorrow").toString()));
                         pine.setDayaftertomorrow(Integer.parseInt(result.get("dayaftertomorrow").toString()));
                     }
-                    pineRepository.save(pine);
+                    pine.setLastModifiedTime(now);
                     return pine;
                 } else {
                     return null;
@@ -173,7 +173,6 @@ public class UserService {
                         weeds.setDayaftertomorrow(Integer.parseInt(result.get("dayaftertomorrow").toString()));
                     }
                     weeds.setLastModifiedTime(now);
-                    log.info("updateWeeds");
                     return weeds;
                 }  else {
                     return null;
@@ -239,8 +238,6 @@ public class UserService {
     public boolean checkLastModifiedTime(LocalDateTime lastModifiedTime) {
         LocalDateTime now = LocalDateTime.now(ZoneId.of("Asia/Seoul"));
         if (lastModifiedTime == null) return true;
-        log.info("lastModifiedTime == {}",lastModifiedTime.getDayOfMonth());
-        log.info("now == {}",now.getDayOfMonth());
         return now.getDayOfMonth() != lastModifiedTime.getDayOfMonth();
     }
 }
