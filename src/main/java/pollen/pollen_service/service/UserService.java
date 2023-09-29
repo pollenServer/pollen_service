@@ -8,6 +8,7 @@ import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import pollen.pollen_service.domain.Oak;
 import pollen.pollen_service.domain.Pine;
 import pollen.pollen_service.domain.Weeds;
@@ -29,6 +30,7 @@ import java.time.ZoneId;
 @Service
 @Slf4j
 @RequiredArgsConstructor
+@Transactional
 public class UserService {
 
     @Value("${spring.service.secret_key}")
