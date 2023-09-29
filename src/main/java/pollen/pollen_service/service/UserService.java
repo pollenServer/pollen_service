@@ -161,6 +161,7 @@ public class UserService {
                 String time = now.toString().replaceAll("-", "").concat("06");
                 JSONObject result = getData("getWeedsPollenRiskndxV3", areaNo, time);
                 if (result != null) {
+                    weeds = new Weeds(areaNo);
                     if (result.get("today").toString().equals("")) {    // 전날 18시 데이터 응답 대비
                         weeds.setTomorrow(Integer.parseInt(result.get("tomorrow").toString()));
                         weeds.setDayaftertomorrow(Integer.parseInt(result.get("dayaftertomorrow").toString()));
