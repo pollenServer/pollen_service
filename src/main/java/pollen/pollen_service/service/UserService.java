@@ -170,7 +170,7 @@ public class UserService {
                         weeds.setTomorrow(Integer.parseInt(result.get("tomorrow").toString()));
                         weeds.setDayaftertomorrow(Integer.parseInt(result.get("dayaftertomorrow").toString()));
                     }
-                    weedsRepository.save(weeds);
+                    weedsRepository.saveAndFlush(weeds);
                     log.info("updateWeeds");
                     return weeds;
                 }  else {
