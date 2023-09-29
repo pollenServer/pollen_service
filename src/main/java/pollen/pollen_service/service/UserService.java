@@ -157,11 +157,10 @@ public class UserService {
             }
         } else {
             if (checkLastModifiedTime(weeds.getLastModifiedTime())) {
-                LocalDate now = LocalDate.now(ZoneId.of("Asia/Seoul"));
-                String time = now.toString().replaceAll("-", "").concat("06");
+                LocalDateTime now = LocalDateTime.now(ZoneId.of("Asia/Seoul"));
+                String time = now.toLocalDate().toString().replaceAll("-", "").concat("06");
                 JSONObject result = getData("getWeedsPollenRiskndxV3", areaNo, time);
                 if (result != null) {
-                    weeds = new Weeds(areaNo);
                     if (result.get("today").toString().equals("")) {    // 전날 18시 데이터 응답 대비
                         weeds.setTomorrow(Integer.parseInt(result.get("tomorrow").toString()));
                         weeds.setDayaftertomorrow(Integer.parseInt(result.get("dayaftertomorrow").toString()));
@@ -171,7 +170,7 @@ public class UserService {
                         weeds.setTomorrow(Integer.parseInt(result.get("tomorrow").toString()));
                         weeds.setDayaftertomorrow(Integer.parseInt(result.get("dayaftertomorrow").toString()));
                     }
-                    weedsRepository.saveAndFlush(weeds);
+                    weeds.setLastModifiedTime(now);
                     log.info("updateWeeds");
                     return weeds;
                 }  else {
