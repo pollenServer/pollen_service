@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.RestController;
 import pollen.pollen_service.service.UserService;
 
 import java.io.IOException;
+import java.util.Map;
 
 @RestController
 @RequiredArgsConstructor
@@ -30,5 +31,10 @@ public class Controller {
     @GetMapping("/weeds")
     public Object weedsRequest(@RequestParam("areaNo") String areaNo) throws IOException, ParseException {
         return userService.findWeedsPollen(areaNo);
+    }
+
+    @GetMapping("/init")
+    public Map<String, Object> initRequest() {
+        return userService.initRequest();
     }
 }

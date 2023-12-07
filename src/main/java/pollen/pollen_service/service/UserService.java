@@ -9,6 +9,7 @@ import org.json.simple.parser.ParseException;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import pollen.pollen_service.domain.InitResponse;
 import pollen.pollen_service.domain.Oak;
 import pollen.pollen_service.domain.Pine;
 import pollen.pollen_service.domain.Weeds;
@@ -26,6 +27,7 @@ import java.net.URLEncoder;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
+import java.util.*;
 
 @Service
 @Slf4j
@@ -40,6 +42,38 @@ public class UserService {
     private final OakRepository oakRepository;
     private final PineRepository pineRepository;
     private final WeedsRepository weedsRepository;
+
+    public Map<String, Object> initRequest() {
+        Map<String, Object> map = new HashMap<>();
+
+        LocalDate now = LocalDate.now(ZoneId.of("Asia/Seoul"));
+        int month = now.getMonthValue();
+        List<InitResponse> initResponse = new ArrayList<>();
+        if (4 <= month && month <= 6) {
+            List<Oak> findOakData = oakRepository.findInitData();
+            List<Pine> findPineData = pineRepository.findInitData();
+
+            findOakData.sort(Comparator.comparingLong(o -> Long.parseLong(o.getAreaNo())));
+            findPineData.sort(Comparator.comparingLong(p -> Long.parseLong(p.getAreaNo())));
+
+            for (int i = 0; i < findOakData.size() && i < findPineData.size(); i++) {
+                Oak oak = findOakData.get(i);
+                Pine pine = findPineData.get(i);
+                initResponse.add(new InitResponse(oak.getAreaNo(), oak.getToday(), pine.getToday(), 0, Math.max(oak.getToday(), pine.getToday())));
+            }
+        }
+        // 8~10월 => 잡초류
+        if (8 <= month && month <= 10) {
+            List<Weeds> initWeedsData = weedsRepository.findInitData();
+            for (Weeds weeds : initWeedsData) {
+                initResponse.add(new InitResponse(weeds.getAreaNo(), 0, 0, weeds.getToday(), weeds.getToday()));
+            }
+        }
+
+        map.put("data", initResponse);
+        System.out.println("hello2");
+        return map;
+    }
 
     public Object findOakPollen(String areaNo) throws IOException, ParseException {
         Oak oak = oakRepository.findByAreaNo(areaNo);
@@ -174,7 +208,7 @@ public class UserService {
                     }
                     weeds.setLastModifiedTime(now);
                     return weeds;
-                }  else {
+                } else {
                     return null;
                 }
             }
