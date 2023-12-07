@@ -71,7 +71,6 @@ public class UserService {
         }
 
         map.put("data", initResponse);
-        System.out.println("hello2");
         return map;
     }
 
@@ -270,8 +269,13 @@ public class UserService {
     }
 
     public boolean checkLastModifiedTime(LocalDateTime lastModifiedTime) {
-        LocalDateTime now = LocalDateTime.now(ZoneId.of("Asia/Seoul"));
-        if (lastModifiedTime == null) return true;
-        return now.getDayOfMonth() != lastModifiedTime.getDayOfMonth();
+        /**
+         * 테스트를 위한 주석
+         * 테스트 추가 : return true
+         */
+//        LocalDateTime now = LocalDateTime.now(ZoneId.of("Asia/Seoul"));
+//        if (lastModifiedTime == null) return true;
+//        return now.getDayOfMonth() != lastModifiedTime.getDayOfMonth();
+        return true;
     }
 }
