@@ -63,7 +63,7 @@ public class UserService {
             }
         }
         // 8~10월 => 잡초류
-        if (8 <= month && month <= 10) {
+        if (8 <= month && month <= 12) {
             List<Weeds> initWeedsData = weedsRepository.findInitData();
             for (Weeds weeds : initWeedsData) {
                 initResponse.add(new InitResponse(weeds.getAreaNo(), 0, 0, weeds.getToday(), weeds.getToday()));
