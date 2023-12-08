@@ -276,6 +276,6 @@ public class UserService {
 //        LocalDateTime now = LocalDateTime.now(ZoneId.of("Asia/Seoul"));
 //        if (lastModifiedTime == null) return true;
 //        return now.getDayOfMonth() != lastModifiedTime.getDayOfMonth();
-        return true;
+        return false;
     }
 }
