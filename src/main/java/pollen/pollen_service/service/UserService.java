@@ -63,8 +63,8 @@ public class UserService {
             }
         }
         // 8~10월 => 잡초류
-//        if (8 <= month && month <= 12) {
-        if (true) {
+        if (8 <= month && month <= 10) {
+//        if (true) {
             List<Weeds> initWeedsData = weedsRepository.findInitData();
             for (Weeds weeds : initWeedsData) {
                 initResponse.add(new InitResponse(weeds.getAreaNo(), 0, 0, weeds.getToday(), weeds.getToday()));
@@ -274,9 +274,9 @@ public class UserService {
          * 테스트를 위한 주석
          * 테스트 추가 : return true
          */
-//        LocalDateTime now = LocalDateTime.now(ZoneId.of("Asia/Seoul"));
-//        if (lastModifiedTime == null) return true;
-//        return now.getDayOfMonth() != lastModifiedTime.getDayOfMonth();
-        return false;
+        LocalDateTime now = LocalDateTime.now(ZoneId.of("Asia/Seoul"));
+        if (lastModifiedTime == null) return true;
+        return now.getDayOfMonth() != lastModifiedTime.getDayOfMonth();
+//        return false;
     }
 }
